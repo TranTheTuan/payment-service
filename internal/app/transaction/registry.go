@@ -6,12 +6,23 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/tunaiku/mobilebanking/internal/app/domain"
 	"github.com/tunaiku/mobilebanking/internal/app/transaction/handler"
+	"github.com/tunaiku/mobilebanking/internal/pkg/pg"
 	"go.uber.org/dig"
 )
 
 func Register(container *dig.Container) {
-	container.Provide(func(userSessionHelper domain.UserSessionHelper) *handler.TransactionEndpoint {
-		return handler.NewTransactionEndpoint(userSessionHelper)
+	container.Provide(func(
+		userSessionHelper domain.UserSessionHelper,
+		accountInfoService domain.AccountInformationService,
+		txInfoService domain.TransactionInformationService,
+		pgWrapper *pg.CrudRepositoryWrapper,
+	) *handler.TransactionEndpoint {
+		return handler.NewTransactionEndpoint(
+			userSessionHelper,
+			accountInfoService,
+			txInfoService,
+			pgWrapper,
+		)
 	})
 }
 
